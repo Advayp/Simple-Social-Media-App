@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = require("./constants");
 const path_1 = __importDefault(require("path"));
-const User_1 = require("./Entities/User");
+const User_1 = require("./entities/User");
 require("dotenv/config");
 exports.default = {
     migrations: {
@@ -13,7 +13,7 @@ exports.default = {
         pattern: /^[\w-]+\d+\.ts$/,
     },
     entities: [User_1.User],
-    dbName: "socialMediaApp",
+    dbName: process.env.DB_NAME,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     type: "postgresql",
