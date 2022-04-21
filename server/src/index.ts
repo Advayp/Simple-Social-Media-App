@@ -5,6 +5,7 @@ import { PORT } from "./constants";
 import userRouter from "./routers/user";
 import { MyContext } from "./types";
 import session from "express-session";
+import postRouter from "./routers/post";
 
 export const Context: MyContext = {
     em: undefined,
@@ -14,6 +15,7 @@ const main = async () => {
     const app = express();
     app.use(express.json());
     app.use("/user", userRouter);
+    app.use("/post", postRouter);
     app.use(
         session({
             secret: process.env.COOKIE_SECRET ?? "your mom",
@@ -22,7 +24,7 @@ const main = async () => {
         })
     );
     app.listen(PORT, () => {
-        console.log(`Alive on localhost:${PORT}`);
+        console.log(`Alive on http://localhost:${PORT}`);
     });
     app.get("/", (_, res) => {
         res.json({ hello: "bye" });

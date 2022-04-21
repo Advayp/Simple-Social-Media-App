@@ -10,6 +10,7 @@ const express_1 = __importDefault(require("express"));
 const constants_1 = require("./constants");
 const user_1 = __importDefault(require("./routers/user"));
 const express_session_1 = __importDefault(require("express-session"));
+const post_1 = __importDefault(require("./routers/post"));
 exports.Context = {
     em: undefined,
 };
@@ -18,13 +19,14 @@ const main = async () => {
     const app = (0, express_1.default)();
     app.use(express_1.default.json());
     app.use("/user", user_1.default);
+    app.use("/post", post_1.default);
     app.use((0, express_session_1.default)({
         secret: (_a = process.env.COOKIE_SECRET) !== null && _a !== void 0 ? _a : "your mom",
         resave: false,
         saveUninitialized: false,
     }));
     app.listen(constants_1.PORT, () => {
-        console.log(`Alive on localhost:${constants_1.PORT}`);
+        console.log(`Alive on http://localhost:${constants_1.PORT}`);
     });
     app.get("/", (_, res) => {
         res.json({ hello: "bye" });
