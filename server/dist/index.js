@@ -11,6 +11,8 @@ const constants_1 = require("./constants");
 const user_1 = __importDefault(require("./routers/user"));
 const express_session_1 = __importDefault(require("express-session"));
 const post_1 = __importDefault(require("./routers/post"));
+const cors_1 = __importDefault(require("cors"));
+const body_parser_1 = __importDefault(require("body-parser"));
 exports.Context = {
     em: undefined,
 };
@@ -18,6 +20,10 @@ const main = async () => {
     var _a;
     const app = (0, express_1.default)();
     app.use(express_1.default.json());
+    app.use(body_parser_1.default.json());
+    app.use((0, cors_1.default)({
+        origin: "*",
+    }));
     app.use("/user", user_1.default);
     app.use("/post", post_1.default);
     app.use((0, express_session_1.default)({

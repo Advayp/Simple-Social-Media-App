@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EditPost = exports.CreatePost = exports.GetPost = exports.GetAllPosts = void 0;
+exports.GetPostID = exports.EditPost = exports.CreatePost = exports.GetPost = exports.GetAllPosts = void 0;
 const index_1 = require("../index");
 const Post_1 = require("../entities/Post");
 const User_1 = require("../entities/User");
@@ -43,4 +43,21 @@ const EditPost = async (req, res) => {
     res.json({ post });
 };
 exports.EditPost = EditPost;
+const GetPostID = async (req, res) => {
+    const { userId, title } = req.body;
+    const post = await index_1.Context.em.findOne(Post_1.Post, { userId, title });
+    if (post === null) {
+        res.json({
+            errors: [
+                {
+                    field: "userId, title",
+                    message: "A post with the requested properties does not exist",
+                },
+            ],
+        });
+        return;
+    }
+    res.json({ id: post.id });
+};
+exports.GetPostID = GetPostID;
 //# sourceMappingURL=post.js.map

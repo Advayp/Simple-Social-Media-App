@@ -6,6 +6,8 @@ import userRouter from "./routers/user";
 import { MyContext } from "./types";
 import session from "express-session";
 import postRouter from "./routers/post";
+import cors from "cors";
+import bodyParser from "body-parser";
 
 export const Context: MyContext = {
     em: undefined,
@@ -14,6 +16,12 @@ export const Context: MyContext = {
 const main = async () => {
     const app = express();
     app.use(express.json());
+    app.use(bodyParser.json());
+    app.use(
+        cors({
+            origin: "*",
+        })
+    );
     app.use("/user", userRouter);
     app.use("/post", postRouter);
     app.use(

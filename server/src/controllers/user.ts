@@ -23,6 +23,8 @@ export const GetOne = async (req: Request, res: Response) => {
 export const SignUp = async (req: Request, res: Response) => {
     const { name, password } = req.body;
 
+    console.log(req.body);
+
     const existingUser = await Context.em?.findOne(User, { name });
 
     if (existingUser !== null) {

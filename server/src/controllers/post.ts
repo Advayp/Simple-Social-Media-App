@@ -50,3 +50,23 @@ export const EditPost = async (req: Request, res: Response) => {
 
     res.json({ post });
 };
+
+export const GetPostID = async (req: Request, res: Response) => {
+    const { userId, title } = req.body;
+
+    const post = await Context.em!.findOne(Post, { userId, title });
+
+    if (post === null) {
+        res.json({
+            errors: [
+                {
+                    field: "userId, title",
+                    message:
+                        "A post with the requested properties does not exist",
+                },
+            ],
+        });
+        return;
+    }
+    res.json({ id: post.id });
+};

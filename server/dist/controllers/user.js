@@ -23,6 +23,7 @@ exports.GetOne = GetOne;
 const SignUp = async (req, res) => {
     var _a;
     const { name, password } = req.body;
+    console.log(req.body);
     const existingUser = await ((_a = index_1.Context.em) === null || _a === void 0 ? void 0 : _a.findOne(User_1.User, { name }));
     if (existingUser !== null) {
         res.json({
