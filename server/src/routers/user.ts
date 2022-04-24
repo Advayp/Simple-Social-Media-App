@@ -1,12 +1,20 @@
 import express from "express";
-import { GetAllUsers, GetOne, Me, SignUp } from "../controllers/user";
-import csurf from "csurf";
+import {
+    GetAllUsers,
+    GetOne,
+    Login,
+    Logout,
+    Me,
+    SignUp,
+} from "../controllers/user";
 
 const router = express.Router();
 
-router.get("/all", csurf, GetAllUsers);
-router.get("/one", csurf, GetOne);
-router.post("/register", csurf, SignUp);
-router.get("/me", csurf, Me);
+router.get("/me", Me);
+router.get("/logout", Logout);
+router.get("/all", GetAllUsers);
+router.get("/one", GetOne);
+router.post("/login", Login);
+router.post("/register", SignUp);
 
 export default router;

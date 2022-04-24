@@ -2,12 +2,15 @@ import { Request, Response } from "express";
 import { User } from "../entities/User";
 import { Context } from "../index";
 import argon2 from "argon2";
+import { Session, SessionData } from "express-session";
 
 declare module "express-session" {
     export interface SessionData {
         user: User | null;
     }
 }
+
+var session: Session & Partial<SessionData>;
 
 export const GetAllUsers = async (_: Request, res: Response) => {
     const users = await Context.em?.find(User, {});
@@ -23,6 +26,8 @@ export const GetOne = async (req: Request, res: Response) => {
 export const SignUp = async (req: Request, res: Response) => {
     const { name, password } = req.body;
 
+    session = req.session;
+
     console.log(req.body);
 
     const existingUser = await Context.em?.findOne(User, { name });
@@ -32,7 +37,7 @@ export const SignUp = async (req: Request, res: Response) => {
             errors: [
                 {
                     field: "username",
-                    message: "that username already exists",
+                    message: "Username already exists.",
                 },
             ],
         });
@@ -44,7 +49,7 @@ export const SignUp = async (req: Request, res: Response) => {
             errors: [
                 {
                     field: "username",
-                    message: "username is too short",
+                    message: "Username is too short",
                 },
             ],
         });
@@ -55,7 +60,7 @@ export const SignUp = async (req: Request, res: Response) => {
             errors: [
                 {
                     field: "password",
-                    message: "password is too short",
+                    message: "Password is too short",
                 },
             ],
         });
@@ -68,7 +73,8 @@ export const SignUp = async (req: Request, res: Response) => {
 
     await Context.em!.persistAndFlush(user);
 
-    req.session.user = user;
+    session = req.session;
+    session.user = user;
 
     res.json({ name: user.name });
 };
@@ -83,7 +89,7 @@ export const Login = async (req: Request, res: Response) => {
             errors: [
                 {
                     field: "username",
-                    message: "incorrect username",
+                    message: "Invalid Username",
                 },
             ],
         });
@@ -97,14 +103,15 @@ export const Login = async (req: Request, res: Response) => {
             errors: [
                 {
                     field: "password",
-                    message: "incorrect password",
+                    message: "Incorrect password",
                 },
             ],
         });
         return;
     }
 
-    req.session.user = user;
+    session = req.session;
+    session.user = user;
 
     res.json({
         successful: true,
@@ -112,6 +119,11 @@ export const Login = async (req: Request, res: Response) => {
     });
 };
 
-export const Me = async (req: Request, res: Response) => {
-    res.json({ user: req.session.user });
+export const Me = async (_: Request, res: Response) => {
+    res.json({ user: session.user, stuff: "stuff" });
+};
+
+export const Logout = async (_: Request, res: Response) => {
+    session.user = null;
+    res.json({ status: "successful" });
 };

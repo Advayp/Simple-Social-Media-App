@@ -3,10 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Me = exports.Login = exports.SignUp = exports.GetOne = exports.GetAllUsers = void 0;
+exports.Logout = exports.Me = exports.Login = exports.SignUp = exports.GetOne = exports.GetAllUsers = void 0;
 const User_1 = require("../entities/User");
 const index_1 = require("../index");
 const argon2_1 = __importDefault(require("argon2"));
+var session;
 const GetAllUsers = async (_, res) => {
     var _a;
     const users = await ((_a = index_1.Context.em) === null || _a === void 0 ? void 0 : _a.find(User_1.User, {}));
@@ -23,6 +24,7 @@ exports.GetOne = GetOne;
 const SignUp = async (req, res) => {
     var _a;
     const { name, password } = req.body;
+    session = req.session;
     console.log(req.body);
     const existingUser = await ((_a = index_1.Context.em) === null || _a === void 0 ? void 0 : _a.findOne(User_1.User, { name }));
     if (existingUser !== null) {
@@ -30,7 +32,7 @@ const SignUp = async (req, res) => {
             errors: [
                 {
                     field: "username",
-                    message: "that username already exists",
+                    message: "Username already exists.",
                 },
             ],
         });
@@ -41,7 +43,7 @@ const SignUp = async (req, res) => {
             errors: [
                 {
                     field: "username",
-                    message: "username is too short",
+                    message: "Username is too short",
                 },
             ],
         });
@@ -52,7 +54,7 @@ const SignUp = async (req, res) => {
             errors: [
                 {
                     field: "password",
-                    message: "password is too short",
+                    message: "Password is too short",
                 },
             ],
         });
@@ -61,7 +63,8 @@ const SignUp = async (req, res) => {
     const hashedPassword = await argon2_1.default.hash(password);
     const user = index_1.Context.em.create(User_1.User, { name, password: hashedPassword });
     await index_1.Context.em.persistAndFlush(user);
-    req.session.user = user;
+    session = req.session;
+    session.user = user;
     res.json({ name: user.name });
 };
 exports.SignUp = SignUp;
@@ -73,7 +76,7 @@ const Login = async (req, res) => {
             errors: [
                 {
                     field: "username",
-                    message: "incorrect username",
+                    message: "Invalid Username",
                 },
             ],
         });
@@ -85,21 +88,27 @@ const Login = async (req, res) => {
             errors: [
                 {
                     field: "password",
-                    message: "incorrect password",
+                    message: "Incorrect password",
                 },
             ],
         });
         return;
     }
-    req.session.user = user;
+    session = req.session;
+    session.user = user;
     res.json({
         successful: true,
         name: user.name,
     });
 };
 exports.Login = Login;
-const Me = async (req, res) => {
-    res.json({ user: req.session.user });
+const Me = async (_, res) => {
+    res.json({ user: session.user, stuff: "stuff" });
 };
 exports.Me = Me;
+const Logout = async (_, res) => {
+    session.user = null;
+    res.json({ status: "successful" });
+};
+exports.Logout = Logout;
 //# sourceMappingURL=user.js.map

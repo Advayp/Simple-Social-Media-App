@@ -1,16 +1,31 @@
-import { Box, Button, Heading, Text } from "@chakra-ui/react";
+import { Box, Button, Text } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
 import type { NextPage } from "next";
 import { InputField } from "../components/InputField";
 import { Navbar } from "../components/Navbar";
 import { Wrapper } from "../components/Wrapper";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Router from "next/router";
 import { WarningTwoIcon } from "@chakra-ui/icons";
 
-const Register: NextPage = () => {
+const Login: NextPage = () => {
     const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await (
+                await fetch("http://localhost:4000/user/me", { method: "GET" })
+            ).json();
+
+            if (data.user) {
+                Router.push("/dashboard");
+                return;
+            }
+        };
+
+        fetchData();
+    }, []);
 
     return (
         <>
@@ -20,7 +35,7 @@ const Register: NextPage = () => {
                     initialValues={{ username: "", password: "" }}
                     onSubmit={async (values) => {
                         const response = await (
-                            await fetch("http://localhost:4000/user/register", {
+                            await fetch("http://localhost:4000/user/login", {
                                 method: "POST",
                                 body: JSON.stringify({
                                     name: values.username,
@@ -73,7 +88,7 @@ const Register: NextPage = () => {
                                     isLoading={isSubmitting}
                                     colorScheme="yellow"
                                 >
-                                    Register
+                                    Login
                                 </Button>
                             </Form>
                         </div>
@@ -84,4 +99,4 @@ const Register: NextPage = () => {
     );
 };
 
-export default Register;
+export default Login;
