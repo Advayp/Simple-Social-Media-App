@@ -61,7 +61,11 @@ const SignUp = async (req, res) => {
         return;
     }
     const hashedPassword = await argon2_1.default.hash(password);
-    const user = index_1.Context.em.create(User_1.User, { name, password: hashedPassword });
+    const user = index_1.Context.em.create(User_1.User, {
+        name,
+        password: hashedPassword,
+        badge: "New",
+    });
     await index_1.Context.em.persistAndFlush(user);
     session = req.session;
     session.user = user;
@@ -76,7 +80,7 @@ const Login = async (req, res) => {
             errors: [
                 {
                     field: "username",
-                    message: "Invalid Username",
+                    message: "Invalid username or password",
                 },
             ],
         });
@@ -88,7 +92,7 @@ const Login = async (req, res) => {
             errors: [
                 {
                     field: "password",
-                    message: "Incorrect password",
+                    message: "Invalid username or password",
                 },
             ],
         });

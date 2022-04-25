@@ -30,7 +30,7 @@ __decorate([
     __metadata("design:type", Object)
 ], Post.prototype, "updatedAt", void 0);
 __decorate([
-    (0, core_1.Property)({ type: "text" }),
+    (0, core_1.Property)({ type: "text", unique: true }),
     __metadata("design:type", String)
 ], Post.prototype, "title", void 0);
 __decorate([
@@ -41,6 +41,14 @@ __decorate([
     (0, core_1.Property)(),
     __metadata("design:type", Number)
 ], Post.prototype, "userId", void 0);
+__decorate([
+    (0, core_1.Property)({ nullable: true }),
+    __metadata("design:type", Number)
+], Post.prototype, "dislikes", void 0);
+__decorate([
+    (0, core_1.Property)({ nullable: true }),
+    __metadata("design:type", Number)
+], Post.prototype, "likes", void 0);
 Post = __decorate([
     (0, core_1.Entity)()
 ], Post);

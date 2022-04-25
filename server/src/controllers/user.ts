@@ -69,7 +69,11 @@ export const SignUp = async (req: Request, res: Response) => {
 
     const hashedPassword = await argon2.hash(password);
 
-    const user = Context.em!.create(User, { name, password: hashedPassword });
+    const user = Context.em!.create(User, {
+        name,
+        password: hashedPassword,
+        badge: "New",
+    });
 
     await Context.em!.persistAndFlush(user);
 

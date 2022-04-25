@@ -61,11 +61,38 @@
           "primary": false,
           "nullable": false,
           "mappedType": "integer"
+        },
+        "dislikes": {
+          "name": "dislikes",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "likes": {
+          "name": "likes",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
         }
       },
       "name": "post",
       "schema": "public",
       "indexes": [
+        {
+          "columnNames": [
+            "title"
+          ],
+          "composite": false,
+          "keyName": "post_title_unique",
+          "primary": false,
+          "unique": true
+        },
         {
           "keyName": "post_pkey",
           "columnNames": [
@@ -126,6 +153,15 @@
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "mappedType": "text"
+        },
+        "badge": {
+          "name": "badge",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
           "mappedType": "text"
         }
       },

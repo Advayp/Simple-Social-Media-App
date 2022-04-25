@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetPostID = exports.EditPost = exports.CreatePost = exports.GetPost = exports.GetAllPosts = void 0;
+exports.DislikePost = exports.LikePost = exports.GetPostID = exports.EditPost = exports.CreatePost = exports.GetPost = exports.GetAllPosts = void 0;
 const index_1 = require("../index");
 const Post_1 = require("../entities/Post");
 const User_1 = require("../entities/User");
@@ -18,7 +18,13 @@ exports.GetPost = GetPost;
 const CreatePost = async (req, res) => {
     const { id, title, content } = req.body;
     const user = await index_1.Context.em.findOne(User_1.User, { id });
-    const post = index_1.Context.em.create(Post_1.Post, { userId: id, title, content });
+    const post = index_1.Context.em.create(Post_1.Post, {
+        userId: id,
+        title,
+        content,
+        likes: 0,
+        dislikes: 0,
+    });
     await index_1.Context.em.persistAndFlush(post);
     res.json({ post, user });
 };
@@ -60,4 +66,40 @@ const GetPostID = async (req, res) => {
     res.json({ id: post.id });
 };
 exports.GetPostID = GetPostID;
+const LikePost = async (req, res) => {
+    const { userId, title } = req.body;
+    const post = await index_1.Context.em.findOne(Post_1.Post, { userId, title });
+    if (post === null) {
+        res.json({
+            errors: [
+                {
+                    field: "userId, title",
+                    message: "That post does not exist",
+                },
+            ],
+        });
+        return;
+    }
+    post.likes += 1;
+    res.json({ post });
+};
+exports.LikePost = LikePost;
+const DislikePost = async (req, res) => {
+    const { userId, title } = req.body;
+    const post = await index_1.Context.em.findOne(Post_1.Post, { userId, title });
+    if (post === null) {
+        res.json({
+            errors: [
+                {
+                    field: "userId, title",
+                    message: "That post does not exist",
+                },
+            ],
+        });
+        return;
+    }
+    post.dislikes += 1;
+    res.json({ post });
+};
+exports.DislikePost = DislikePost;
 //# sourceMappingURL=post.js.map

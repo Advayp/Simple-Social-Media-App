@@ -11,7 +11,7 @@ export class Post {
     @Property({ type: "date", onUpdate: () => new Date() })
     updatedAt? = new Date();
 
-    @Property({ type: "text" })
+    @Property({ type: "text", unique: true })
     title: string;
 
     @Property({ type: "text" })
@@ -19,4 +19,10 @@ export class Post {
 
     @Property()
     userId: number;
+
+    @Property({ nullable: true })
+    dislikes: number;
+
+    @Property({ nullable: true })
+    likes: number;
 }
