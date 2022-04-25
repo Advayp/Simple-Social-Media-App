@@ -89,7 +89,7 @@ export const Login = async (req: Request, res: Response) => {
             errors: [
                 {
                     field: "username",
-                    message: "Invalid Username",
+                    message: "Invalid username or password",
                 },
             ],
         });
@@ -103,7 +103,7 @@ export const Login = async (req: Request, res: Response) => {
             errors: [
                 {
                     field: "password",
-                    message: "Incorrect password",
+                    message: "Invalid username or password",
                 },
             ],
         });
@@ -120,7 +120,7 @@ export const Login = async (req: Request, res: Response) => {
 };
 
 export const Me = async (_: Request, res: Response) => {
-    res.json({ user: session.user, stuff: "stuff" });
+    res.json({ user: session ? session.user : null, stuff: "stuff" });
 };
 
 export const Logout = async (_: Request, res: Response) => {

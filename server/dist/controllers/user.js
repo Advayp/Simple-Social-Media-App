@@ -103,7 +103,7 @@ const Login = async (req, res) => {
 };
 exports.Login = Login;
 const Me = async (_, res) => {
-    res.json({ user: session.user, stuff: "stuff" });
+    res.json({ user: session ? session.user : null, stuff: "stuff" });
 };
 exports.Me = Me;
 const Logout = async (_, res) => {
