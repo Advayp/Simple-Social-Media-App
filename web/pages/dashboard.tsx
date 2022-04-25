@@ -1,32 +1,53 @@
-import { Box, Flex, Heading, Spinner } from "@chakra-ui/react";
+import {
+    Flex,
+    Heading,
+    Spinner,
+    useToast,
+    Text,
+    Badge,
+} from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { Navbar } from "../components/Navbar";
 import { useState, useEffect } from "react";
 import Router from "next/router";
+import { Post } from "../components/Post";
 
 const Dashboard: NextPage = () => {
     const [username, setUsername] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const toast = useToast();
+    const fetchData = async () => {
+        const data = await (
+            await fetch("http://localhost:4000/user/me", {
+                method: "GET",
+            })
+        ).json();
+        console.log(data);
+        if (!data.user) {
+            setIsLoggedIn(false);
+            Router.push("/register");
+            return;
+        }
+        setUsername(data.user.name);
+        setIsLoggedIn(true);
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            const data = await (
-                await fetch("http://localhost:4000/user/me", {
-                    method: "GET",
-                })
-            ).json();
-            console.log(data);
-            if (!data.user) {
-                setIsLoggedIn(false);
-                Router.push("/register");
-                return;
-            }
-            setUsername(data.user.name);
-            setIsLoggedIn(true);
-        };
-
         fetchData();
     }, []);
+
+    useEffect(() => {
+        if (username !== "") {
+            toast({
+                title: `Welcome, ${username}`,
+                description: "Login Successful",
+                status: "success",
+                isClosable: true,
+                duration: 2000,
+                position: "bottom-left",
+            });
+        }
+    }, [username]);
 
     return (
         <>
@@ -53,7 +74,55 @@ const Dashboard: NextPage = () => {
             )}
             {isLoggedIn && (
                 <>
-                    <Heading>Hello, {username}</Heading>
+                    <Heading>Hello</Heading>
+                    <Post
+                        title="You"
+                        username={username}
+                        userRank={10}
+                        badge={
+                            <Badge
+                                ml="0.5"
+                                mb="1"
+                                colorScheme="red"
+                                borderRadius={"md"}
+                            >
+                                VET
+                            </Badge>
+                        }
+                    >
+                        <>
+                            Barton waited twenty always repair in within we do.
+                            An delighted offending curiosity my is dashboards
+                            at. Boy prosperous increasing surrounded companions
+                            her nor advantages sufficient put. John on time down
+                            give meet help as of. Him waiting and correct
+                            believe now cottage she another.
+                        </>
+                    </Post>
+                    <Post
+                        title="Hello"
+                        username="Garry_Ranjan"
+                        userRank={1}
+                        badge={
+                            <Badge
+                                ml="0.5"
+                                mb="1"
+                                colorScheme="green"
+                                borderRadius={"md"}
+                            >
+                                New
+                            </Badge>
+                        }
+                    >
+                        <>
+                            Barton waited twenty always repair in within we do.
+                            An delighted offending curiosity my is dashboards
+                            at. Boy prosperous increasing surrounded companions
+                            her nor advantages sufficient put. John on time down
+                            give meet help as of. Him waiting and correct
+                            believe now cottage she another.
+                        </>
+                    </Post>
                 </>
             )}
         </>

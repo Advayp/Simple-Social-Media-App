@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Text } from "@chakra-ui/react";
+import { Box, Button, Text, Link } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
 import type { NextPage } from "next";
 import { InputField } from "../components/InputField";
@@ -7,10 +7,12 @@ import { Wrapper } from "../components/Wrapper";
 import { useState } from "react";
 import Router from "next/router";
 import { WarningTwoIcon } from "@chakra-ui/icons";
+import NextLink from "next/link";
 
 const Register: NextPage = () => {
     const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     return (
         <>
@@ -56,7 +58,14 @@ const Register: NextPage = () => {
                                         name="password"
                                         placeholder="Password"
                                         label="Password"
-                                        type="password"
+                                        type={
+                                            showPassword ? "text" : "password"
+                                        }
+                                        password
+                                        showText={showPassword}
+                                        passwordOnClick={() => {
+                                            setShowPassword(!showPassword);
+                                        }}
                                     />
                                 </Box>
                                 {isError && (
@@ -76,6 +85,14 @@ const Register: NextPage = () => {
                                     Register
                                 </Button>
                             </Form>
+                            <Text mt={4}>
+                                Already have an account?{" "}
+                                <NextLink href="/login">
+                                    <Link fontWeight={"medium"}>
+                                        Login Here.
+                                    </Link>
+                                </NextLink>
+                            </Text>
                         </div>
                     )}
                 </Formik>

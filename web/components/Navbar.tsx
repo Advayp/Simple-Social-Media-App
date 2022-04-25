@@ -31,7 +31,7 @@ export const Navbar: React.FC<Props> = ({ isLoggedIn }) => {
                 <NextLink href="/" passHref>
                     <Link>
                         <Heading size={"md"} ml={4}>
-                            Wasper
+                            Whisper
                         </Heading>
                     </Link>
                 </NextLink>

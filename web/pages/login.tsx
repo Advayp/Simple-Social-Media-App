@@ -1,4 +1,4 @@
-import { Box, Button, Text } from "@chakra-ui/react";
+import { Box, Button, Text, Link } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
 import type { NextPage } from "next";
 import { InputField } from "../components/InputField";
@@ -7,10 +7,12 @@ import { Wrapper } from "../components/Wrapper";
 import { useState, useEffect } from "react";
 import Router from "next/router";
 import { WarningTwoIcon } from "@chakra-ui/icons";
+import NextLink from "next/link";
 
 const Login: NextPage = () => {
     const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -71,7 +73,14 @@ const Login: NextPage = () => {
                                         name="password"
                                         placeholder="Password"
                                         label="Password"
-                                        type="password"
+                                        type={
+                                            showPassword ? "text" : "password"
+                                        }
+                                        password
+                                        showText={showPassword}
+                                        passwordOnClick={() => {
+                                            setShowPassword(!showPassword);
+                                        }}
                                     />
                                 </Box>
                                 {isError && (
@@ -91,6 +100,14 @@ const Login: NextPage = () => {
                                     Login
                                 </Button>
                             </Form>
+                            <Text mt={4}>
+                                Don't have an account?{" "}
+                                <NextLink href="/register">
+                                    <Link fontWeight={"medium"}>
+                                        Register Here.
+                                    </Link>
+                                </NextLink>
+                            </Text>
                         </div>
                     )}
                 </Formik>
