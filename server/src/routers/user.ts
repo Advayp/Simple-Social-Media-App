@@ -1,5 +1,6 @@
 import express from "express";
 import {
+    FetchById,
     GetAllUsers,
     GetOne,
     Login,
@@ -14,6 +15,7 @@ router.get("/me", Me);
 router.get("/logout", Logout);
 router.get("/all", GetAllUsers);
 router.get("/one", GetOne);
+router.get("/fetch/:id", FetchById);
 router.post("/login", Login);
 router.post("/register", SignUp);
 

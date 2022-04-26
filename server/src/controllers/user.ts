@@ -23,6 +23,12 @@ export const GetOne = async (req: Request, res: Response) => {
     res.json({ user });
 };
 
+export const FetchById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const user = await Context.em!.findOne(User, { id: parseInt(id) });
+    res.json(user);
+};
+
 export const SignUp = async (req: Request, res: Response) => {
     const { name, password } = req.body;
 

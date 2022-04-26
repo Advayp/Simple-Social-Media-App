@@ -18,5 +18,5 @@ export class User {
     password: string;
 
     @Property({ type: "text", nullable: true })
-    badge: string;
+    badge: string = "New";
 }

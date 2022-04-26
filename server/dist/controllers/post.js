@@ -1,12 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DislikePost = exports.LikePost = exports.GetPostID = exports.EditPost = exports.CreatePost = exports.GetPost = exports.GetAllPosts = void 0;
+exports.DeletePost = exports.DislikePost = exports.LikePost = exports.GetPostID = exports.EditPost = exports.CreatePost = exports.GetPost = exports.GetAllPosts = void 0;
 const index_1 = require("../index");
 const Post_1 = require("../entities/Post");
 const User_1 = require("../entities/User");
 const GetAllPosts = async (_, res) => {
     const posts = await index_1.Context.em.find(Post_1.Post, {});
-    res.json({ posts });
+    let postResponse = [];
+    for (let i = 0; i < posts.length; i++) {
+        const user = await index_1.Context.em.findOne(User_1.User, { id: posts[i].userId });
+        postResponse = [...postResponse, Object.assign(Object.assign({}, posts[i]), { user })];
+    }
+    res.json(postResponse);
 };
 exports.GetAllPosts = GetAllPosts;
 const GetPost = async (req, res) => {
@@ -102,4 +107,10 @@ const DislikePost = async (req, res) => {
     res.json({ post });
 };
 exports.DislikePost = DislikePost;
+const DeletePost = async (req, res) => {
+    const { id } = req.params;
+    await index_1.Context.em.nativeDelete(Post_1.Post, { id: parseInt(id) });
+    res.json({ status: "successful" });
+};
+exports.DeletePost = DeletePost;
 //# sourceMappingURL=post.js.map

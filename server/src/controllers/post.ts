@@ -2,10 +2,28 @@ import { Context } from "../index";
 import { Request, Response } from "express";
 import { Post } from "../entities/Post";
 import { User } from "../entities/User";
+import { Loaded } from "@mikro-orm/core";
 
 export const GetAllPosts = async (_: Request, res: Response) => {
     const posts = await Context.em!.find(Post, {});
-    res.json({ posts });
+    let postResponse: {
+        user: Loaded<User, never> | null;
+        id: number;
+        createdAt?: Date | undefined;
+        updatedAt?: Date | undefined;
+        title: string;
+        content: string;
+        userId: number;
+        dislikes: number;
+        likes: number;
+    }[] = [];
+
+    for (let i = 0; i < posts.length; i++) {
+        const user = await Context.em!.findOne(User, { id: posts[i].userId });
+        postResponse = [...postResponse, { ...posts[i], user }];
+    }
+
+    res.json(postResponse);
 };
 
 export const GetPost = async (req: Request, res: Response) => {
@@ -119,4 +137,10 @@ export const DislikePost = async (req: Request, res: Response) => {
     post!.dislikes += 1;
 
     res.json({ post });
+};
+
+export const DeletePost = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    await Context.em!.nativeDelete(Post, { id: parseInt(id) });
+    res.json({ status: "successful" });
 };

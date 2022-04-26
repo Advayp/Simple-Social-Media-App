@@ -15,6 +15,7 @@ let User = class User {
     constructor() {
         this.createdAt = new Date();
         this.updatedAt = new Date();
+        this.badge = "New";
     }
 };
 __decorate([

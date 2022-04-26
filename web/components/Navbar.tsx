@@ -17,7 +17,17 @@ interface Props {
 export const Navbar: React.FC<Props> = ({ isLoggedIn }) => {
     return (
         <>
-            <Flex align={"center"} height="7vh">
+            <Flex
+                align={"center"}
+                height="7vh"
+                as="header"
+                position={"sticky"}
+                top={0}
+                backgroundColor="rgba(255, 
+                255, 255, 0.8)"
+                backdropFilter="saturate(180%) blur(5px)"
+                borderBottomWidth={"1.5px"}
+            >
                 <NextLink href="/" passHref>
                     <Link>
                         <Image
@@ -70,7 +80,6 @@ export const Navbar: React.FC<Props> = ({ isLoggedIn }) => {
                     </>
                 )}
             </Flex>
-            <hr></hr>
         </>
     );
 };

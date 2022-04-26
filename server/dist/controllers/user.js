@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Logout = exports.Me = exports.Login = exports.SignUp = exports.GetOne = exports.GetAllUsers = void 0;
+exports.Logout = exports.Me = exports.Login = exports.SignUp = exports.FetchById = exports.GetOne = exports.GetAllUsers = void 0;
 const User_1 = require("../entities/User");
 const index_1 = require("../index");
 const argon2_1 = __importDefault(require("argon2"));
@@ -21,6 +21,12 @@ const GetOne = async (req, res) => {
     res.json({ user });
 };
 exports.GetOne = GetOne;
+const FetchById = async (req, res) => {
+    const { id } = req.params;
+    const user = await index_1.Context.em.findOne(User_1.User, { id: parseInt(id) });
+    res.json(user);
+};
+exports.FetchById = FetchById;
 const SignUp = async (req, res) => {
     var _a;
     const { name, password } = req.body;

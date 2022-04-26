@@ -8,6 +8,7 @@ const post_1 = require("../controllers/post");
 const router = express_1.default.Router();
 router.get("/all", post_1.GetAllPosts);
 router.get("/one/:id", post_1.GetPost);
+router.get("/delete/:id", post_1.DeletePost);
 router.post("/create", post_1.CreatePost);
 router.post("/edit", post_1.EditPost);
 router.post("/like", post_1.LikePost);

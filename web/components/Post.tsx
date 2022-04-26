@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { GenerateSeed } from "../utils/RandomStringGenerator";
+import { MdThumbUp, MdThumbDown } from "react-icons/md";
 
 interface Props {
     title: string;
@@ -31,8 +32,10 @@ export const Post: React.FC<Props> = ({
         <>
             <Box
                 maxW={"2xl"}
+                minW={"xl"}
                 borderWidth={"1.5px"}
                 m={4}
+                mx={"auto"}
                 borderRadius={"lg"}
                 overflow="hidden"
                 p={4}
@@ -61,11 +64,11 @@ export const Post: React.FC<Props> = ({
                 <Flex mt={4} columnGap={1}>
                     <IconButton
                         aria-label="Like this post"
-                        icon={<ChevronUpIcon />}
+                        icon={<MdThumbUp />}
                     />
                     <IconButton
                         aria-label="Dislike this post"
-                        icon={<ChevronDownIcon />}
+                        icon={<MdThumbDown />}
                     />
                 </Flex>
             </Box>

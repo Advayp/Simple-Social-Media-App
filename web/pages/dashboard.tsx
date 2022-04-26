@@ -3,19 +3,26 @@ import {
     Heading,
     Spinner,
     useToast,
-    Text,
     Badge,
+    Spacer,
+    Button,
+    Box,
 } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { Navbar } from "../components/Navbar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Router from "next/router";
 import { Post } from "../components/Post";
+import { Form, Formik } from "formik";
+import { InputField } from "../components/InputField";
 
 const Dashboard: NextPage = () => {
     const [username, setUsername] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [posts, setPosts] = useState([]);
     const toast = useToast();
+    const rendered = useRef(false);
+    const userInfo = useRef({ name: "Error", badge: "Err" });
     const fetchData = async () => {
         const data = await (
             await fetch("http://localhost:4000/user/me", {
@@ -24,12 +31,28 @@ const Dashboard: NextPage = () => {
         ).json();
         console.log(data);
         if (!data.user) {
-            setIsLoggedIn(false);
             Router.push("/register");
+            if (!rendered.current) {
+                toast({
+                    title: "Access Denied",
+                    description:
+                        "Please register/login to access your dashboard",
+                    status: "error",
+                    isClosable: true,
+                    duration: 3000,
+                    position: "bottom-left",
+                });
+            }
+            setIsLoggedIn(false);
+            rendered.current = true;
             return;
         }
         setUsername(data.user.name);
         setIsLoggedIn(true);
+        const postData = await (
+            await fetch("http://localhost:4000/post/all", { method: "GET" })
+        ).json();
+        setPosts([...postData]);
     };
 
     useEffect(() => {
@@ -74,55 +97,83 @@ const Dashboard: NextPage = () => {
             )}
             {isLoggedIn && (
                 <>
-                    <Heading>Hello</Heading>
-                    <Post
-                        title="You"
-                        username={username}
-                        userRank={10}
-                        badge={
-                            <Badge
-                                ml="0.5"
-                                mb="1"
-                                colorScheme="red"
-                                borderRadius={"md"}
+                    <Flex>
+                        <Flex
+                            boxSize={"md"}
+                            borderRightWidth="1.5px"
+                            boxShadow={"md"}
+                            position="fixed"
+                            height={"100vh"}
+                            p={4}
+                            direction="column"
+                            rowGap={4}
+                            maxW={"400px"}
+                            align={"center"}
+                        >
+                            <Heading>Create Post</Heading>
+                            <Formik
+                                initialValues={{ title: "", content: "" }}
+                                onSubmit={(values) => {
+                                    console.log(values);
+                                }}
                             >
-                                VET
-                            </Badge>
-                        }
-                    >
-                        <>
-                            Barton waited twenty always repair in within we do.
-                            An delighted offending curiosity my is dashboards
-                            at. Boy prosperous increasing surrounded companions
-                            her nor advantages sufficient put. John on time down
-                            give meet help as of. Him waiting and correct
-                            believe now cottage she another.
-                        </>
-                    </Post>
-                    <Post
-                        title="Hello"
-                        username="Garry_Ranjan"
-                        userRank={1}
-                        badge={
-                            <Badge
-                                ml="0.5"
-                                mb="1"
-                                colorScheme="green"
-                                borderRadius={"md"}
-                            >
-                                New
-                            </Badge>
-                        }
-                    >
-                        <>
-                            Barton waited twenty always repair in within we do.
-                            An delighted offending curiosity my is dashboards
-                            at. Boy prosperous increasing surrounded companions
-                            her nor advantages sufficient put. John on time down
-                            give meet help as of. Him waiting and correct
-                            believe now cottage she another.
-                        </>
-                    </Post>
+                                {({ isSubmitting }) => (
+                                    <div>
+                                        <Form>
+                                            <InputField
+                                                name="title"
+                                                placeholder="Title"
+                                                label="Title"
+                                            />
+                                            <Box mt={4}>
+                                                <InputField
+                                                    name="content"
+                                                    placeholder="Enlighten the world..."
+                                                    label="Content"
+                                                />
+                                            </Box>
+                                            <Button
+                                                mt={6}
+                                                type="submit"
+                                                isLoading={isSubmitting}
+                                                colorScheme="yellow"
+                                                minW={"370px"}
+                                            >
+                                                Create Post
+                                            </Button>
+                                        </Form>
+                                    </div>
+                                )}
+                            </Formik>
+                        </Flex>
+                        <Spacer />
+                        <Flex direction={"column"}>
+                            {posts.map((v, idx) => {
+                                return (
+                                    <Post
+                                        title={v.title}
+                                        userRank={v.userId}
+                                        username={v.user.name}
+                                        badge={
+                                            <Badge
+                                                colorScheme={"green"}
+                                                borderRadius={"md"}
+                                                mb={1}
+                                            >
+                                                {v.user.badge === null
+                                                    ? "Old"
+                                                    : v.user.badge}
+                                            </Badge>
+                                        }
+                                        key={idx}
+                                    >
+                                        {v.content}
+                                    </Post>
+                                );
+                            })}
+                        </Flex>
+                        <Spacer />
+                    </Flex>
                 </>
             )}
         </>
