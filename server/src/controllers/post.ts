@@ -34,12 +34,23 @@ export const GetPost = async (req: Request, res: Response) => {
 };
 
 export const CreatePost = async (req: Request, res: Response) => {
-    const { id, title, content } = req.body;
+    const { username, title, content } = req.body;
 
-    const user = await Context.em!.findOne(User, { id });
+    const user = await Context.em!.findOne(User, { name: username });
+
+    if (user === null) {
+        res.json({
+            errors: [
+                {
+                    field: "username",
+                    message: "Invalid username",
+                },
+            ],
+        });
+    }
 
     const post = Context.em!.create(Post, {
-        userId: id,
+        userId: user!.id,
         title,
         content,
         likes: 0,

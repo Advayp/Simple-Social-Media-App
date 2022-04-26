@@ -113,8 +113,31 @@ const Dashboard: NextPage = () => {
                             <Heading>Create Post</Heading>
                             <Formik
                                 initialValues={{ title: "", content: "" }}
-                                onSubmit={(values) => {
-                                    console.log(values);
+                                onSubmit={async (values) => {
+                                    const data = await (
+                                        await fetch(
+                                            "http://localhost:4000/post/create",
+                                            {
+                                                method: "POST",
+                                                headers: {
+                                                    Accept: "application/json",
+                                                    "Content-Type":
+                                                        "application/json",
+                                                },
+                                                body: JSON.stringify({
+                                                    username,
+                                                    title: values.title,
+                                                    content: values.content,
+                                                }),
+                                            }
+                                        )
+                                    ).json();
+
+                                    console.log(data);
+                                    setPosts([
+                                        ...posts,
+                                        { ...data.post, user: data.user },
+                                    ]);
                                 }}
                             >
                                 {({ isSubmitting }) => (
