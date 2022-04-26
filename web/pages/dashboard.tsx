@@ -22,7 +22,6 @@ const Dashboard: NextPage = () => {
     const [posts, setPosts] = useState([]);
     const toast = useToast();
     const rendered = useRef(false);
-    const userInfo = useRef({ name: "Error", badge: "Err" });
     const fetchData = async () => {
         const data = await (
             await fetch("http://localhost:4000/user/me", {
@@ -180,15 +179,12 @@ const Dashboard: NextPage = () => {
                                         username={v.user.name}
                                         badge={
                                             <MyBadge
-                                                badgeLabel={
-                                                    v.user.badge === null
-                                                        ? "Old"
-                                                        : v.user.badge
-                                                }
+                                                badgeLabel={v.user.badge}
                                                 key={idx}
                                             />
                                         }
                                         key={idx}
+                                        profilePicture={v.user.profilePicture}
                                     >
                                         {v.content}
                                     </Post>

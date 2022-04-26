@@ -17,6 +17,7 @@ interface Props {
     title: string;
     username: string;
     userRank: number;
+    profilePicture: string;
     children?: JSX.Element;
     badge?: JSX.Element;
 }
@@ -27,6 +28,7 @@ export const Post: React.FC<Props> = ({
     username,
     userRank,
     badge,
+    profilePicture,
 }) => {
     return (
         <>
@@ -42,13 +44,7 @@ export const Post: React.FC<Props> = ({
                 boxShadow="md"
             >
                 <Flex align={"center"} columnGap={3}>
-                    <Image
-                        src={`https://avatars.dicebear.com/api/bottts/${GenerateSeed(
-                            12
-                        )}.svg`}
-                        width={"50px"}
-                        height="auto"
-                    />
+                    <Image src={profilePicture} width={"50px"} height="auto" />
                     <Box>
                         <Text fontWeight={"semibold"}>
                             {username} {badge}

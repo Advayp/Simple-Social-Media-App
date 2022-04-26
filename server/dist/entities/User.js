@@ -11,11 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const core_1 = require("@mikro-orm/core");
+const utils_1 = require("../utils");
 let User = class User {
     constructor() {
         this.createdAt = new Date();
         this.updatedAt = new Date();
         this.badge = "New";
+        this.profilePicture = `https://avatars.dicebear.com/api/bottts/${(0, utils_1.GenerateSeed)(12)}.svg`;
     }
 };
 __decorate([
@@ -42,6 +44,10 @@ __decorate([
     (0, core_1.Property)({ type: "text", nullable: true }),
     __metadata("design:type", String)
 ], User.prototype, "badge", void 0);
+__decorate([
+    (0, core_1.Property)({ type: "text", nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "profilePicture", void 0);
 User = __decorate([
     (0, core_1.Entity)()
 ], User);

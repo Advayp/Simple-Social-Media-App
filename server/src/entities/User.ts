@@ -1,4 +1,5 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
+import { GenerateSeed } from "../utils";
 
 @Entity()
 export class User {
@@ -19,4 +20,9 @@ export class User {
 
     @Property({ type: "text", nullable: true })
     badge: string = "New";
+
+    @Property({ type: "text", nullable: true })
+    profilePicture: string = `https://avatars.dicebear.com/api/bottts/${GenerateSeed(
+        12
+    )}.svg`;
 }

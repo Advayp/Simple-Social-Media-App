@@ -163,6 +163,15 @@
           "primary": false,
           "nullable": true,
           "mappedType": "text"
+        },
+        "profile_picture": {
+          "name": "profile_picture",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
         }
       },
       "name": "user",
