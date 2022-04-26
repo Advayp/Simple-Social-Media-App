@@ -8,6 +8,7 @@ import {
     InputRightAddon,
     InputGroup,
     Button,
+    Textarea,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
@@ -16,6 +17,7 @@ type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
     name: string;
     password?: boolean;
     showText?: boolean;
+    useTextField?: boolean;
     passwordOnClick?: React.MouseEventHandler<HTMLInputElement>;
 };
 
@@ -28,6 +30,7 @@ export const InputField: React.FC<InputFieldProps> = ({
     password,
     showText,
     passwordOnClick,
+    useTextField,
     ...props
 }) => {
     const [field, { error }] = useField(props);
@@ -35,7 +38,17 @@ export const InputField: React.FC<InputFieldProps> = ({
         <FormControl isInvalid={!!error}>
             <FormLabel htmlFor={field.name}>{label}</FormLabel>
             <InputGroup>
-                <Input {...field} {...props} id={field.name} />
+                {useTextField ? (
+                    <Textarea
+                        id={field.name}
+                        size="md"
+                        {...field}
+                        placeholder={props.placeholder}
+                        minHeight="20rem"
+                    />
+                ) : (
+                    <Input {...field} {...props} id={field.name} />
+                )}
                 {password && (
                     <>
                         <InputRightAddon

@@ -3,7 +3,6 @@ import {
     Heading,
     Spinner,
     useToast,
-    Badge,
     Spacer,
     Button,
     Box,
@@ -15,6 +14,7 @@ import Router from "next/router";
 import { Post } from "../components/Post";
 import { Form, Formik } from "formik";
 import { InputField } from "../components/InputField";
+import { MyBadge } from "../components/MyBadge";
 
 const Dashboard: NextPage = () => {
     const [username, setUsername] = useState("");
@@ -130,6 +130,7 @@ const Dashboard: NextPage = () => {
                                                     name="content"
                                                     placeholder="Enlighten the world..."
                                                     label="Content"
+                                                    useTextField
                                                 />
                                             </Box>
                                             <Button
@@ -155,15 +156,14 @@ const Dashboard: NextPage = () => {
                                         userRank={v.userId}
                                         username={v.user.name}
                                         badge={
-                                            <Badge
-                                                colorScheme={"green"}
-                                                borderRadius={"md"}
-                                                mb={1}
-                                            >
-                                                {v.user.badge === null
-                                                    ? "Old"
-                                                    : v.user.badge}
-                                            </Badge>
+                                            <MyBadge
+                                                badgeLabel={
+                                                    v.user.badge === null
+                                                        ? "Old"
+                                                        : v.user.badge
+                                                }
+                                                key={idx}
+                                            />
                                         }
                                         key={idx}
                                     >
