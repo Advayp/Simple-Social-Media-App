@@ -70,7 +70,7 @@ export const Post: React.FC<Props> = ({
                     <Button
                         leftIcon={<MdThumbUp />}
                         colorScheme={buttonClicked === "Like" ? "green" : null}
-                        onClick={() => {
+                        onClick={async () => {
                             if (buttonClicked === "Dislike") {
                                 setDislikes(dislikes - 1);
                             }
@@ -84,6 +84,20 @@ export const Post: React.FC<Props> = ({
                             }
                             setButtonClicked("Like");
                             setLikes(likes + 1);
+                            const data = await (
+                                await fetch("http://localhost:4000/post/like", {
+                                    method: "POST",
+                                    headers: {
+                                        Accept: "application/json",
+                                        "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({
+                                        title,
+                                        username,
+                                    }),
+                                })
+                            ).json();
+                            console.log(data);
                         }}
                     >
                         {likes}
@@ -91,7 +105,7 @@ export const Post: React.FC<Props> = ({
                     <Button
                         leftIcon={<MdThumbDown />}
                         colorScheme={buttonClicked === "Dislike" ? "red" : null}
-                        onClick={() => {
+                        onClick={async () => {
                             if (buttonClicked === "Like") {
                                 setLikes(likes - 1);
                             }
@@ -105,6 +119,23 @@ export const Post: React.FC<Props> = ({
                             }
                             setButtonClicked("Dislike");
                             setDislikes(dislikes + 1);
+                            const data = await (
+                                await fetch(
+                                    "http://localhost:4000/post/dislike",
+                                    {
+                                        method: "POST",
+                                        headers: {
+                                            Accept: "application/json",
+                                            "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({
+                                            title,
+                                            username,
+                                        }),
+                                    }
+                                )
+                            ).json();
+                            console.log(data);
                         }}
                     >
                         {dislikes}
