@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { Post } from "../entities/Post";
 import { User } from "../entities/User";
 import { Loaded } from "@mikro-orm/core";
+import { MySession } from "./user";
 
 export const GetAllPosts = async (_: Request, res: Response) => {
     const posts = await Context.em!.find(Post, {});
@@ -107,15 +108,21 @@ export const GetPostID = async (req: Request, res: Response) => {
 };
 
 export const LikePost = async (req: Request, res: Response) => {
-    const { userId, title } = req.body;
+    const { username, title } = req.body;
 
-    const post = await Context.em!.findOne(Post, { userId, title });
+    const postCreator = await Context.em!.findOne(User, { name: username });
+    const user = await Context.em!.findOne(User, { id: MySession.user!.id });
+
+    const post = await Context.em!.findOne(Post, {
+        userId: postCreator!.id,
+        title,
+    });
 
     if (post === null) {
         res.json({
             errors: [
                 {
-                    field: "userId, title",
+                    field: "username, title",
                     message: "That post does not exist",
                 },
             ],
@@ -124,20 +131,39 @@ export const LikePost = async (req: Request, res: Response) => {
     }
 
     post!.likes += 1;
+    user!.likedPosts?.push(post.id);
 
     res.json({ post });
 };
 
 export const DislikePost = async (req: Request, res: Response) => {
-    const { userId, title } = req.body;
+    const { username, title } = req.body;
 
-    const post = await Context.em!.findOne(Post, { userId, title });
+    const postCreator = await Context.em!.findOne(User, { name: username });
+    const user = await Context.em!.findOne(User, { id: MySession.user!.id });
+
+    if (user === null) {
+        res.json({
+            errors: [
+                {
+                    field: "N/A",
+                    message: "No user is currently logged in",
+                },
+            ],
+        });
+        return;
+    }
+
+    const post = await Context.em!.findOne(Post, {
+        userId: postCreator!.id,
+        title,
+    });
 
     if (post === null) {
         res.json({
             errors: [
                 {
-                    field: "userId, title",
+                    field: "username, title",
                     message: "That post does not exist",
                 },
             ],
@@ -146,10 +172,13 @@ export const DislikePost = async (req: Request, res: Response) => {
     }
 
     post!.dislikes += 1;
+    user!.dislikedPosts?.push(post.id);
+
+    await Context.em!.persistAndFlush(post);
+    await Context.em!.persistAndFlush(user);
 
     res.json({ post });
 };
-
 export const DeletePost = async (req: Request, res: Response) => {
     const { id } = req.params;
     await Context.em!.nativeDelete(Post, { id: parseInt(id) });

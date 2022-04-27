@@ -9,6 +9,7 @@ import postRouter from "./routers/post";
 import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import { User } from "./entities/User";
 
 export const Context: MyContext = {
     em: undefined,
@@ -32,7 +33,7 @@ const main = async () => {
             cookie: {
                 maxAge: 1000 * 60 * 60 * 24,
                 httpOnly: true,
-                sameSite: "lax", // csrf
+                sameSite: "lax",
                 secure: __prod__,
             },
         })

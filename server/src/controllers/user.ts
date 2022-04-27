@@ -10,7 +10,7 @@ declare module "express-session" {
     }
 }
 
-var session: Session & Partial<SessionData>;
+export var MySession: Session & Partial<SessionData>;
 
 export const GetAllUsers = async (_: Request, res: Response) => {
     const users = await Context.em?.find(User, {});
@@ -32,7 +32,7 @@ export const FetchById = async (req: Request, res: Response) => {
 export const SignUp = async (req: Request, res: Response) => {
     const { name, password } = req.body;
 
-    session = req.session;
+    MySession = req.session;
 
     console.log(req.body);
 
@@ -83,8 +83,8 @@ export const SignUp = async (req: Request, res: Response) => {
 
     await Context.em!.persistAndFlush(user);
 
-    session = req.session;
-    session.user = user;
+    MySession = req.session;
+    MySession.user = user;
 
     res.json({ name: user.name });
 };
@@ -120,8 +120,8 @@ export const Login = async (req: Request, res: Response) => {
         return;
     }
 
-    session = req.session;
-    session.user = user;
+    MySession = req.session;
+    MySession.user = user;
 
     res.json({
         successful: true,
@@ -130,10 +130,10 @@ export const Login = async (req: Request, res: Response) => {
 };
 
 export const Me = async (_: Request, res: Response) => {
-    res.json({ user: session ? session.user : null, stuff: "stuff" });
+    res.json({ user: MySession ? MySession.user : null, stuff: "stuff" });
 };
 
 export const Logout = async (_: Request, res: Response) => {
-    session.user = null;
+    MySession.user = null;
     res.json({ status: "successful" });
 };

@@ -18,6 +18,8 @@ let User = class User {
         this.updatedAt = new Date();
         this.badge = "New";
         this.profilePicture = `https://avatars.dicebear.com/api/bottts/${(0, utils_1.GenerateSeed)(12)}.svg`;
+        this.likedPosts = [];
+        this.dislikedPosts = [];
     }
 };
 __decorate([
@@ -48,6 +50,14 @@ __decorate([
     (0, core_1.Property)({ type: "text", nullable: true }),
     __metadata("design:type", String)
 ], User.prototype, "profilePicture", void 0);
+__decorate([
+    (0, core_1.Property)({ type: core_1.types.array, nullable: true }),
+    __metadata("design:type", Array)
+], User.prototype, "likedPosts", void 0);
+__decorate([
+    (0, core_1.Property)({ type: core_1.types.array, nullable: true }),
+    __metadata("design:type", Array)
+], User.prototype, "dislikedPosts", void 0);
 User = __decorate([
     (0, core_1.Entity)()
 ], User);

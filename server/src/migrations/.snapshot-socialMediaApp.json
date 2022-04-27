@@ -172,6 +172,24 @@
           "primary": false,
           "nullable": true,
           "mappedType": "text"
+        },
+        "liked_posts": {
+          "name": "liked_posts",
+          "type": "text[]",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "array"
+        },
+        "disliked_posts": {
+          "name": "disliked_posts",
+          "type": "text[]",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "array"
         }
       },
       "name": "user",
