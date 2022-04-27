@@ -1,4 +1,4 @@
-import { Box, Button, Text, Link } from "@chakra-ui/react";
+import { Box, Button, Text, Link, Heading, useToast } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
 import type { NextPage } from "next";
 import { InputField } from "../components/InputField";
@@ -13,6 +13,7 @@ const Login: NextPage = () => {
     const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const toast = useToast();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -56,12 +57,23 @@ const Login: NextPage = () => {
                         } else {
                             setErrorMessage("");
                             setIsError(false);
+                            toast({
+                                title: `Welcome, ${values.username}`,
+                                description: "Login Successful",
+                                status: "success",
+                                isClosable: true,
+                                duration: 2000,
+                                position: "bottom-left",
+                            });
                             Router.push("/dashboard");
                         }
                     }}
                 >
                     {({ isSubmitting }) => (
                         <div>
+                            <Heading mb={4} fontSize="3xl" textAlign={"center"}>
+                                Login
+                            </Heading>
                             <Form>
                                 <InputField
                                     name="username"

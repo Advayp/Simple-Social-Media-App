@@ -5,19 +5,22 @@ import {
     Divider,
     Flex,
     Heading,
-    IconButton,
     Image,
     Text,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { GenerateSeed } from "../utils/RandomStringGenerator";
 import { MdThumbUp, MdThumbDown } from "react-icons/md";
+
+type ButtonClick = "Like" | "Dislike" | "";
 
 interface Props {
     title: string;
     username: string;
     userRank: number;
     profilePicture: string;
+    initialLikes: number;
+    initialDislikes: number;
     children?: JSX.Element;
     badge?: JSX.Element;
 }
@@ -29,7 +32,13 @@ export const Post: React.FC<Props> = ({
     userRank,
     badge,
     profilePicture,
+    initialLikes,
+    initialDislikes,
 }) => {
+    const [buttonClicked, setButtonClicked] = useState<ButtonClick>("");
+    const [likes, setLikes] = useState(initialLikes);
+    const [dislikes, setDislikes] = useState(initialDislikes);
+
     return (
         <>
             <Box
@@ -58,14 +67,48 @@ export const Post: React.FC<Props> = ({
                 <Divider />
                 <Text fontSize="large">{children}</Text>
                 <Flex mt={4} columnGap={1}>
-                    <IconButton
-                        aria-label="Like this post"
-                        icon={<MdThumbUp />}
-                    />
-                    <IconButton
-                        aria-label="Dislike this post"
-                        icon={<MdThumbDown />}
-                    />
+                    <Button
+                        leftIcon={<MdThumbUp />}
+                        colorScheme={buttonClicked === "Like" ? "green" : null}
+                        onClick={() => {
+                            if (buttonClicked === "Dislike") {
+                                setDislikes(dislikes - 1);
+                            }
+                            if (buttonClicked === "Like") {
+                                setButtonClicked("");
+                                setLikes(likes - 1);
+                                if (likes <= 0) {
+                                    setLikes(0);
+                                }
+                                return;
+                            }
+                            setButtonClicked("Like");
+                            setLikes(likes + 1);
+                        }}
+                    >
+                        {likes}
+                    </Button>
+                    <Button
+                        leftIcon={<MdThumbDown />}
+                        colorScheme={buttonClicked === "Dislike" ? "red" : null}
+                        onClick={() => {
+                            if (buttonClicked === "Like") {
+                                setLikes(likes - 1);
+                            }
+                            if (buttonClicked === "Dislike") {
+                                setButtonClicked("");
+                                setDislikes(dislikes - 1);
+                                if (dislikes <= 0) {
+                                    setDislikes(0);
+                                }
+                                return;
+                            }
+                            setButtonClicked("Dislike");
+                            setDislikes(dislikes + 1);
+                        }}
+                    >
+                        {dislikes}
+                    </Button>
                 </Flex>
             </Box>
         </>

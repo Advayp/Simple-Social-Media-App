@@ -58,19 +58,6 @@ const Dashboard: NextPage = () => {
         fetchData();
     }, []);
 
-    useEffect(() => {
-        if (username !== "") {
-            toast({
-                title: `Welcome, ${username}`,
-                description: "Login Successful",
-                status: "success",
-                isClosable: true,
-                duration: 2000,
-                position: "bottom-left",
-            });
-        }
-    }, [username]);
-
     return (
         <>
             <Navbar isLoggedIn />
@@ -185,6 +172,8 @@ const Dashboard: NextPage = () => {
                                         }
                                         key={idx}
                                         profilePicture={v.user.profilePicture}
+                                        initialLikes={v.likes}
+                                        initialDislikes={v.dislikes}
                                     >
                                         {v.content}
                                     </Post>
