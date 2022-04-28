@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeletePost = exports.DislikePost = exports.LikePost = exports.GetPostID = exports.EditPost = exports.CreatePost = exports.GetPost = exports.GetAllPosts = void 0;
+exports.RemoveLike = exports.RemoveDislike = exports.DeletePost = exports.DislikePost = exports.LikePost = exports.GetPostID = exports.EditPost = exports.CreatePost = exports.GetPost = exports.GetAllPosts = void 0;
 const index_1 = require("../index");
 const Post_1 = require("../entities/Post");
 const User_1 = require("../entities/User");
@@ -151,4 +151,87 @@ const DeletePost = async (req, res) => {
     res.json({ status: "successful" });
 };
 exports.DeletePost = DeletePost;
+const RemoveDislike = async (req, res) => {
+    var _a, _b;
+    const { username, title } = req.body;
+    const postCreator = await index_1.Context.em.findOne(User_1.User, { name: username });
+    const user = await index_1.Context.em.findOne(User_1.User, { id: user_1.MySession.user.id });
+    if (user === null) {
+        res.json({
+            errors: [
+                {
+                    field: "N/A",
+                    message: "No user is currently logged in",
+                },
+            ],
+        });
+        return;
+    }
+    const post = await index_1.Context.em.findOne(Post_1.Post, {
+        userId: postCreator.id,
+        title,
+    });
+    if (post === null) {
+        res.json({
+            errors: [
+                {
+                    field: "username, title",
+                    message: "That post does not exist",
+                },
+            ],
+        });
+        return;
+    }
+    post.dislikes -= 1;
+    if (post.dislikes < 0) {
+        post.dislikes = 0;
+    }
+    user.dislikedPosts = user.dislikedPosts.filter((v) => v.toString() !== post.id.toString());
+    await ((_a = index_1.Context.em) === null || _a === void 0 ? void 0 : _a.persistAndFlush(post));
+    await ((_b = index_1.Context.em) === null || _b === void 0 ? void 0 : _b.persistAndFlush(user));
+    res.json({ post, user });
+};
+exports.RemoveDislike = RemoveDislike;
+const RemoveLike = async (req, res) => {
+    var _a, _b;
+    const { username, title } = req.body;
+    const postCreator = await index_1.Context.em.findOne(User_1.User, { name: username });
+    const user = await index_1.Context.em.findOne(User_1.User, { id: user_1.MySession.user.id });
+    if (user === null) {
+        res.json({
+            errors: [
+                {
+                    field: "N/A",
+                    message: "No user is currently logged in",
+                },
+            ],
+        });
+        return;
+    }
+    const post = await index_1.Context.em.findOne(Post_1.Post, {
+        userId: postCreator.id,
+        title,
+    });
+    if (post === null) {
+        res.json({
+            errors: [
+                {
+                    field: "username, title",
+                    message: "That post does not exist",
+                },
+            ],
+        });
+        return;
+    }
+    post.likes -= 1;
+    if (post.likes < 0) {
+        post.likes = 0;
+    }
+    user.likedPosts = user.likedPosts.filter((v) => v.toString() !== post.id.toString());
+    console.log(user.likedPosts);
+    await ((_a = index_1.Context.em) === null || _a === void 0 ? void 0 : _a.persistAndFlush(post));
+    await ((_b = index_1.Context.em) === null || _b === void 0 ? void 0 : _b.persistAndFlush(user));
+    res.json({ post, user });
+};
+exports.RemoveLike = RemoveLike;
 //# sourceMappingURL=post.js.map

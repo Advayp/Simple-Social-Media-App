@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import { GenerateSeed } from "../utils/RandomStringGenerator";
 import { MdThumbUp, MdThumbDown } from "react-icons/md";
 
-type ButtonClick = "Like" | "Dislike" | "";
+export type ButtonClick = "Like" | "Dislike" | "";
 
 interface Props {
     title: string;
@@ -23,6 +23,7 @@ interface Props {
     initialDislikes: number;
     children?: JSX.Element;
     badge?: JSX.Element;
+    initialButtonClick: ButtonClick;
 }
 
 export const Post: React.FC<Props> = ({
@@ -34,8 +35,10 @@ export const Post: React.FC<Props> = ({
     profilePicture,
     initialLikes,
     initialDislikes,
+    initialButtonClick,
 }) => {
-    const [buttonClicked, setButtonClicked] = useState<ButtonClick>("");
+    const [buttonClicked, setButtonClicked] =
+        useState<ButtonClick>(initialButtonClick);
     const [likes, setLikes] = useState(initialLikes);
     const [dislikes, setDislikes] = useState(initialDislikes);
 

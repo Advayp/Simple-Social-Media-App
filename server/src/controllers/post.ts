@@ -184,3 +184,99 @@ export const DeletePost = async (req: Request, res: Response) => {
     await Context.em!.nativeDelete(Post, { id: parseInt(id) });
     res.json({ status: "successful" });
 };
+
+export const RemoveDislike = async (req: Request, res: Response) => {
+    const { username, title } = req.body;
+
+    const postCreator = await Context.em!.findOne(User, { name: username });
+    const user = await Context.em!.findOne(User, { id: MySession.user!.id });
+    if (user === null) {
+        res.json({
+            errors: [
+                {
+                    field: "N/A",
+                    message: "No user is currently logged in",
+                },
+            ],
+        });
+        return;
+    }
+
+    const post = await Context.em!.findOne(Post, {
+        userId: postCreator!.id,
+        title,
+    });
+
+    if (post === null) {
+        res.json({
+            errors: [
+                {
+                    field: "username, title",
+                    message: "That post does not exist",
+                },
+            ],
+        });
+        return;
+    }
+
+    post.dislikes -= 1;
+    if (post.dislikes < 0) {
+        post.dislikes = 0;
+    }
+    user.dislikedPosts = user.dislikedPosts!.filter(
+        (v) => v.toString() !== post.id.toString()
+    );
+
+    await Context.em?.persistAndFlush(post);
+    await Context.em?.persistAndFlush(user);
+    res.json({ post, user });
+};
+
+export const RemoveLike = async (req: Request, res: Response) => {
+    const { username, title } = req.body;
+
+    const postCreator = await Context.em!.findOne(User, { name: username });
+    const user = await Context.em!.findOne(User, { id: MySession.user!.id });
+    if (user === null) {
+        res.json({
+            errors: [
+                {
+                    field: "N/A",
+                    message: "No user is currently logged in",
+                },
+            ],
+        });
+        return;
+    }
+
+    const post = await Context.em!.findOne(Post, {
+        userId: postCreator!.id,
+        title,
+    });
+
+    if (post === null) {
+        res.json({
+            errors: [
+                {
+                    field: "username, title",
+                    message: "That post does not exist",
+                },
+            ],
+        });
+        return;
+    }
+
+    post.likes -= 1;
+    if (post.likes < 0) {
+        post.likes = 0;
+    }
+    user.likedPosts = user.likedPosts!.filter(
+        (v) => v.toString() !== post.id.toString()
+    );
+    console.log(user.likedPosts);
+
+    await Context.em?.persistAndFlush(post);
+    await Context.em?.persistAndFlush(user);
+
+    res.json({ post, user });
+};

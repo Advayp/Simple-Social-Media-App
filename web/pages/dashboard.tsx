@@ -15,13 +15,28 @@ import { Post } from "../components/Post";
 import { Form, Formik } from "formik";
 import { InputField } from "../components/InputField";
 import { MyBadge } from "../components/MyBadge";
+import { ButtonClick } from "../components/Post";
 
 const Dashboard: NextPage = () => {
     const [username, setUsername] = useState("");
+    const [thisUser, setThisUser] = useState<any>({});
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [posts, setPosts] = useState([]);
     const toast = useToast();
     const rendered = useRef(false);
+
+    const deduceButtonClickStatus = (
+        likes: string[],
+        dislikes: string[],
+        postId: number
+    ): ButtonClick => {
+        console.table(likes, dislikes);
+        if (likes === null || dislikes === null) return "";
+        if (likes.includes(postId.toString())) return "Like";
+        if (dislikes.includes(postId.toString())) return "Dislike";
+        return "";
+    };
+
     const fetchData = async () => {
         const data = await (
             await fetch("http://localhost:4000/user/me", {
@@ -46,6 +61,8 @@ const Dashboard: NextPage = () => {
             rendered.current = true;
             return;
         }
+        setThisUser(data.user);
+        console.log(thisUser);
         setUsername(data.user.name);
         setIsLoggedIn(true);
         const postData = await (
@@ -174,6 +191,11 @@ const Dashboard: NextPage = () => {
                                         profilePicture={v.user.profilePicture}
                                         initialLikes={v.likes}
                                         initialDislikes={v.dislikes}
+                                        initialButtonClick={deduceButtonClickStatus(
+                                            thisUser.likedPosts,
+                                            thisUser.dislikedPosts,
+                                            v.id
+                                        )}
                                     >
                                         {v.content}
                                     </Post>

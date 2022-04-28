@@ -13,5 +13,7 @@ router.post("/create", post_1.CreatePost);
 router.post("/edit", post_1.EditPost);
 router.post("/like", post_1.LikePost);
 router.post("/dislike", post_1.DislikePost);
+router.post("/remove/like", post_1.RemoveLike);
+router.post("/remove/dislike", post_1.RemoveDislike);
 exports.default = router;
 //# sourceMappingURL=post.js.map
